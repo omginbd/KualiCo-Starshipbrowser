@@ -1,29 +1,33 @@
+var shipList = [];
+
 $(document).ready(function(){
 	var apiCall = "http://swapi.co/api/starships/";
 	hitAPI(apiCall);
-	$(".next").on('click', nextPage);
-	$(".previous").on('click', previousPage);
 });
 
 
 var hitAPI = function(apiURL){
 
 	return $.get(apiURL, onResponse);
+
 }
 
 var onResponse = function(dataObject){
 	//Update ShipList
-	var shipList = dataObject.results;
-	for (i = 0; i<shipList.length; i++){
-		console.log(shipList[i]);
-		$(".shipListPanelGroup").append("<div class=\"panel\">" + shipList[i].name + "</div>");
+
+	for (i = 0; i<dataObject.results.length; i++){
+		shipList[i] = dataObject.results[i];
+		$(".shipListGroup").append("<div class=\"panel\" onclick=\"inspectShip(this," + i + ")\">" + shipList[i].name + "</div>");
 	}
+
+	if (dataObject.next !== null)
+	{
+		console.log("Getting next page");
+		hitAPI(dataObject.next);
+	}
+	return;
 }
 
-var nextPage = function(){
-
-}
-
-var previousPage = function(){
-
+var inspectShip = function(e, shipNumber) {
+	console.log(shipList[shipNumber]);
 }

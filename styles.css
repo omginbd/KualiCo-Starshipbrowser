@@ -1,2 +1,14 @@
+.shipDetailsPane {
 
+}
 
+.shipBrowserPane {
+	margin-left:15px;
+	margin-right:15px;
+	height:74vmin;
+	overflow-y: scroll;
+}
+
+.filterOptionsPane {
+	height:74vmin;
+}
