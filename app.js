@@ -1,4 +1,5 @@
 var shipList = [];
+var shipTotal = 0;
 
 $(document).ready(function(){
 	var apiCall = "http://swapi.co/api/starships/";
@@ -15,9 +16,12 @@ var hitAPI = function(apiURL){
 var onResponse = function(dataObject){
 	//Update ShipList
 
-	for (i = 0; i<dataObject.results.length; i++){
-		shipList[i] = dataObject.results[i];
-		$(".shipListGroup").append("<div class=\"panel\" onclick=\"inspectShip(this," + i + ")\">" + shipList[i].name + "</div>");
+	for (shipTotal; shipTotal<dataObject.count; shipTotal++){
+		console.log(shipList);
+		console.log(dataObject);
+		shipList[shipTotal] = dataObject.results[shipTotal];
+		console.log("Adding ship " + dataObject.results[shipTotal].name + ". Added. Now shiplist shows" + shipList[shipTotal].name + " at index " + shipTotal);
+		$(".shipListGroup").append("<div class=\"panel\" onclick=\"inspectShip(this," + shipTotal + ")\">" + shipList[shipTotal].name + "</div>");
 	}
 
 	if (dataObject.next !== null)
