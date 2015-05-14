@@ -1,5 +1,5 @@
 .shipDetailsPane {
-
+	height:74vh;
 }
 
 .shipBrowserPane {
@@ -11,4 +11,12 @@
 
 .filterOptionsPane {
 	height:74vmin;
+}
+
+.headerTitle {
+	height:26vh;
+}
+
+.shipBrowserPaneHeader {
+	margin-bottom:40px;
 }

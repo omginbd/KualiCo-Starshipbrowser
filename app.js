@@ -15,15 +15,15 @@ var hitAPI = function(apiURL){
 
 var onResponse = function(dataObject){
 	//Update ShipList
-
-	for (shipTotal; shipTotal<dataObject.count; shipTotal++){
-		console.log(shipList);
-		console.log(dataObject);
-		shipList[shipTotal] = dataObject.results[shipTotal];
-		console.log("Adding ship " + dataObject.results[shipTotal].name + ". Added. Now shiplist shows" + shipList[shipTotal].name + " at index " + shipTotal);
-		$(".shipListGroup").append("<div class=\"panel\" onclick=\"inspectShip(this," + shipTotal + ")\">" + shipList[shipTotal].name + "</div>");
+	for (i = 0; i<dataObject.results.length; i++){
+		shipList[shipTotal] = dataObject.results[i];
+		//console.log("Ship : " + dataObject.results[i].name + " added at index " + shipTotal);
+		$(".shipListGroup").append("<div class=\"list-group-item\" onclick=\"inspectShip(this," + shipTotal + ")\">" + shipList[shipTotal].name + "</div>");
+		shipTotal++;
 	}
 
+	//Get Next Pages
+	//next will == null when on last page
 	if (dataObject.next !== null)
 	{
 		console.log("Getting next page");
@@ -33,5 +33,10 @@ var onResponse = function(dataObject){
 }
 
 var inspectShip = function(e, shipNumber) {
-	console.log(shipList[shipNumber]);
+	//Disactivate previously activated element
+	$(".list-group .list-group-item").removeClass("active");
+	//Activate clicked element
+	$(e).addClass("active");
+	//Populate Ship Details view
+
 }
