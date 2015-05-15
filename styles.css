@@ -18,5 +18,18 @@
 }
 
 .shipBrowserPaneHeader {
-	margin-bottom:40px;
+	margin-bottom:20px;
+}
+
+.shipListGroup {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.previousOwnerButton {
+	display: none;
 }
