@@ -49,7 +49,7 @@ var inspectShip = function(e, shipNumber) {
 		$(e).addClass("active");
 
 
-		//MAKE IT PRITTY -- ANIMATIONS == PRODUCTION VALUE
+		//MAKE IT PRITTY -- ANIMATIONS === PRODUCTION VALUE
 		$(".shipDetailsList").hide();
 
 		//
@@ -77,21 +77,27 @@ var inspectShip = function(e, shipNumber) {
 
 		//THE PRESTIGE
 		$(".shipDetailsList").show("fast");
-
+		//console.log(shipList[shipNumber].pilots.length);
+		//console.log(shipList[shipNumber]);
 		if(shipList[shipNumber].pilots.length > 0)
 		{
 			$(".previousOwnerButton").show("fast");
 			$(".previousOwnerButton").on('click', function() {
 				//console.log(shipNumber);
-				$.get(shipList[shipNumber].pilots
+				//console.log(shipList[shipNumber].pilots.length);
+				$(".pilotsRow").empty();
+				for (i = 0; i < shipList[shipNumber].pilots.length; i++) {
+					//console.log(i + "/" + shipList[shipNumber].pilots.length);
+					$.get(shipList[shipNumber].pilots[i], gotCrap);
+				}
 			});
 		}
 	}
 
 }
 
-var gotCrap = function(shipIndex) {
+var gotCrap = function(pilotObject) {
 	//console.log("Getting Previous Owner info for ship number: " + shipIndex);
-
+	$(".pilotsRow").append("<div class=\"col-sm-2\" >" + pilotObject.name + "</div>");
 
 }
