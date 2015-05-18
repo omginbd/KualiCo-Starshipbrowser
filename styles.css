@@ -33,3 +33,11 @@
 .previousOwnerButton {
 	display: none;
 }
+
+.priceFilter {
+	margin-top: 10px;
+}
+
+.checkboxesFilter {
+	margin-top:10px;
+}
