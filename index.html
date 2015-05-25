@@ -10,7 +10,7 @@
 
 <body>
 	<div class="container-fluid headerTitle">
-		<div class="jumbotron">
+		<div class="well headerTitle">
 			<h1>StarshipTrader.com</h1>
 		</div>
 		<div class="container-fluid">
@@ -27,13 +27,20 @@
 							<label>Filter Ships more than: </label>
 							<input type="text" class="form-control" id="filterPrice">
 						</div>
-						<div class="checkboxesFilter">
-							<label><input type="checkbox" value="" id="showUnknownPriceCheckbox">Show Ships with Unknown Price</label>
-						</div>
 					</div>
 				</div>
 				<div class="col-sm-4 shipBrowserPane well">
 					<h2 class="shipBrowserPaneHeader">Ship List</h2>
+					<div class="dropdown">
+            <button class="btn btn-sm btn-primary dropdown-toggle" type="button" id="sortDropMenu" data-toggle="dropdown">Sort by
+              <span class="caret"></span></button>
+            <ul class="dropdown-menu noSelectItem">
+              <li class="sortLowToHigh"><a>Price - Low to High</a></li>
+              <li class="sortHighToLow"><a>Price - High to Low</a></li>
+              <li class="sortAToZ"><a>Name - A to Z</a></li>
+              <li class="sortZToA"><a>Name - Z to A</a></li>
+            </ul>
+          </div>
 					<hr>
 					<div class="shipBrowserPaneBody">
 					<ul class="list-group shipListGroup" id="shipListGroup">

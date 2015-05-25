@@ -1,33 +1,57 @@
 var shipList = [];
+var searchFilterList = [];
+var priceFilterList = [];
+var visibleShipList = [];
 var shipTotal = 0;
-var maxPrice = 0;
-var minPrice = 0;
 
 $(document).ready(function(){
+  //Fix Window Height
+
+  $(".shipDetailsPane").height(function(){ return 0.8 * $(window).height()});
+  $(".shipBrowserPane").height(function(){ return 0.8 * $(window).height()});
+  $(".filterOptionsPane").height(function(){ return 0.8 * $(window).height()});
+  $(".headerTitleWell").height(function(){ return 0.2 * $(window).height()});
+
+  //clean up
 	$(".previousOwnerButton").hide();
 
+  //Show Mr. Ajax who's boss
 	var apiCall = "http://swapi.co/api/starships/";
-	hitAPI(apiCall);
+	punchAPI(apiCall);
 
 	//Bind functions
 	$("#searchText").on('keyup', function(evt){
-		disableControls(0);
-		searchFilter(this);
+	  searchFilterList = shipList.filter(searchFilter);
+	  if ($("#filterPrice").val() !== ""){
+	    visibleShipList = searchFilterList.filter(function(n) {
+	      return priceFilterList.indexOf(n) != -1;
+	    });
+	  } else {
+	    visibleShipList = searchFilterList;
+	  }
+		updateDisplayList(visibleShipList);
 	});
 
 	$("#filterPrice").on('keyup', function(evt){
-		disableControls(1);
-		priceFilter(this);
+	  priceFilterList = shipList.filter(priceFilter);
+	  if ($("#searchText").val() !== ""){
+	    visibleShipList = priceFilterList.filter(function(n){
+	      return searchFilterList.indexOf(n) != -1;
+	    });
+	  } else {
+	    visibleShipList = priceFilterList;
+	  }
+	  updateDisplayList(visibleShipList);
 	});
-
-	$("#showUnknownPriceCheckbox").on('change', function(evt){
-		disableControls(2);
-		showUnknownPrice(this.checked);
+	
+	$(".sortLowToHigh").on('click', function(evt){
+	  visibleShipList.sort(function(a, b){
+	    
+	  });
 	});
 });
 
-
-var hitAPI = function(apiURL){
+var punchAPI = function(apiURL){
 
 	return $.get(apiURL, onResponse);
 
@@ -37,20 +61,28 @@ var onResponse = function(dataObject){
 	//Update ShipList
 	for (i = 0; i<dataObject.results.length; i++){
 		shipList[shipTotal] = dataObject.results[i];
-		$(".shipListGroup").append("<div class=\"list-group-item\" onclick=\"inspectShip(this," + shipTotal + ")\">" + shipList[shipTotal].name + "</div>");
-		//console.log("Ship : " + dataObject.results[i].name + " added at index " + shipTotal);
 		shipTotal++;
-
 	}
 
 	//Get Next Pages
 	//next will == null when on last page
 	if (dataObject.next !== null)
 	{
-		//console.log("Getting next page");
-		hitAPI(dataObject.next);
+		punchAPI(dataObject.next);
+	} else {
+	  shipTotal--;
+	  updateDisplayList(shipList);
+	  visibleShipList = shipList;
 	}
 	return;
+}
+
+var updateDisplayList = function(shipArray){
+  $(".shipListGroup").empty();
+  for (i=0; i<shipArray.length; i++){
+	   $(".shipListGroup").append("<div class=\"list-group-item\" onclick=\"inspectShip(this," + i + ")\">" +
+	   shipArray[i].name + "</div>");
+  }
 }
 
 var inspectShip = function(e, shipNumber) {
@@ -80,7 +112,8 @@ var inspectShip = function(e, shipNumber) {
 
 		$(".shipDetailsList").append("<div class=\"list-group-item\">Top Speed: " + shipList[shipNumber].MGLT + " MGLT/Hour</div>");
 
-		$(".shipDetailsList").append("<div class=\"list-group-item\">Top Atmospheric Speed: " + shipList[shipNumber].max_atmosphering_speed + " Units/Time</div>");
+		$(".shipDetailsList").append("<div class=\"list-group-item\">Top Atmospheric Speed: " +
+		shipList[shipNumber].max_atmosphering_speed + " Units/Time</div>");
 
 		$(".shipDetailsList").append("<div class=\"list-group-item\">Cargo Capacity: " + shipList[shipNumber].cargo_capacity + "</div>");
 
@@ -117,64 +150,20 @@ var gotCrap = function(pilotObject) {
 	$(".modal-body").append("<hr>");
 }
 
-var searchFilter = function(e) {
-	//Dat Big O notation... Let's just ignore that for this function.
-	//console.log(document.getElementById("shipListGroup").childNodes);
-
-	for (i = 0; i < shipList.length; i++){
-		if (!shipList[i].name.toLowerCase().includes(e.value.toLowerCase())) {
-			$(document.getElementById("shipListGroup").childNodes[i+1]).hide("fast");
-		} else {
-			$(document.getElementById("shipListGroup").childNodes[i+1]).show("fast");
-		}
-	}
+var searchFilter = function(elt, i, ar) {
+	var compareString = $("#searchText").val();
+	  if (elt.name.toLowerCase().includes(compareString.toLowerCase())) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
-var priceFilter = function(e) {
-	for (i = 0; i < shipList.length; i++){
-			if (Number(e.value) > Number(shipList[i].cost_in_credits)) {
-				$(document.getElementById("shipListGroup").childNodes[i+1]).show("fast");
-			} else {
-				$(document.getElementById("shipListGroup").childNodes[i+1]).hide("fast");
-			}
-		}
-}
-
-var showUnknownPrice = function(hide){
-	if (!hide) {
-		for (i=0; i < shipList.length; i++) {
-			if (shipList[i].cost_in_credits == "unknown") {
-				$(document.getElementById("shipListGroup").childNodes[i+1]).show("fast");
-			}
-		}
+var priceFilter = function(elt, i, ar) {
+	var comparePrice = $("#filterPrice").val();
+	if (Number(elt.cost_in_credits) < Number(comparePrice)){
+	  return true;
 	} else {
-		for (i=0; i < shipList.length; i++) {
-			if (shipList[i].cost_in_credits == "unknown") {
-				$(document.getElementById("shipListGroup").childNodes[i+1]).hide("fast");
-			}
-		}
+	  return false;
 	}
-}
-
-var disableControls = function(controlCode) {
-	switch(controlCode){
-		//Except search
-		case 0:
-			$("#showUnknownPriceCheckbox").addClass("disabled");
-			$("#filterPrice").addClass("disabled");
-			break;
-		//Except priceFilter
-		case 1:
-			$("#searchText").addClass("disabled");
-			$("#showUnknownPriceCheckbox").addClass("disabled");
-			break;
-		//Except UnknownPrice
-		case 2:
-			$("#searchText").addClass("disabled");
-			$("#filterPrice").addClass("disabled");
-			break;
-		deafult:
-				break;
-	}
-
 }
