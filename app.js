@@ -45,9 +45,24 @@ $(document).ready(function(){
 	});
 	
 	$(".sortLowToHigh").on('click', function(evt){
-	  visibleShipList.sort(function(a, b){
-	    
-	  });
+    sortForPrice(evt);
+	  updateDisplayList(visibleShipList);
+	});
+	
+	$(".sortHighToLow").on('click', function(evt){
+	  sortForPrice(evt);
+	  visibleShipList.reverse();
+	  updateDisplayList(visibleShipList);
+	});
+	
+	$(".sortAToZ").on('click', function(evt){
+	  sortByName(evt);
+	  updateDisplayList(visibleShipList);
+	});
+	$(".sortZToA").on('click', function(evt){
+	  sortByName(evt);
+	  visibleShipList.reverse();
+	  updateDisplayList(visibleShipList);
 	});
 });
 
@@ -72,7 +87,7 @@ var onResponse = function(dataObject){
 	} else {
 	  shipTotal--;
 	  updateDisplayList(shipList);
-	  visibleShipList = shipList;
+	  visibleShipList = shipList.slice();
 	}
 	return;
 }
@@ -80,8 +95,13 @@ var onResponse = function(dataObject){
 var updateDisplayList = function(shipArray){
   $(".shipListGroup").empty();
   for (i=0; i<shipArray.length; i++){
+    if (shipArray[i].cost_in_credits == "unknown"){
+      $(".shipListGroup").append("<div class=\"list-group-item unknownPrice\" onclick=\"inspectShip(this," + i + ")\">" +
+	   shipArray[i].name + "</div>");
+    } else {
 	   $(".shipListGroup").append("<div class=\"list-group-item\" onclick=\"inspectShip(this," + i + ")\">" +
 	   shipArray[i].name + "</div>");
+    }
   }
 }
 
@@ -104,38 +124,38 @@ var inspectShip = function(e, shipNumber) {
 		$(".shipDetailsList").hide();
 
 		//
-		$(".shipDetailsList").append("<div class=\"list-group-item\">Model: " + shipList[shipNumber].model + "</div>");
+		$(".shipDetailsList").append("<div class=\"list-group-item\">Model: " + visibleShipList[shipNumber].model + "</div>");
 
-		$(".shipDetailsList").append("<div class=\"list-group-item\">Class: " + shipList[shipNumber].starship_class + "</div>");
+		$(".shipDetailsList").append("<div class=\"list-group-item\">Class: " + visibleShipList[shipNumber].starship_class + "</div>");
 
-		$(".shipDetailsList").append("<div class=\"list-group-item\">Price: " + shipList[shipNumber].cost_in_credits + " credits</div>");
+		$(".shipDetailsList").append("<div class=\"list-group-item\">Price: " + visibleShipList[shipNumber].cost_in_credits + " credits</div>");
 
-		$(".shipDetailsList").append("<div class=\"list-group-item\">Top Speed: " + shipList[shipNumber].MGLT + " MGLT/Hour</div>");
+		$(".shipDetailsList").append("<div class=\"list-group-item\">Top Speed: " + visibleShipList[shipNumber].MGLT + " MGLT/Hour</div>");
 
 		$(".shipDetailsList").append("<div class=\"list-group-item\">Top Atmospheric Speed: " +
-		shipList[shipNumber].max_atmosphering_speed + " Units/Time</div>");
+		visibleShipList[shipNumber].max_atmosphering_speed + " Units/Time</div>");
 
-		$(".shipDetailsList").append("<div class=\"list-group-item\">Cargo Capacity: " + shipList[shipNumber].cargo_capacity + "</div>");
+		$(".shipDetailsList").append("<div class=\"list-group-item\">Cargo Capacity: " + visibleShipList[shipNumber].cargo_capacity + "</div>");
 
-		$(".shipDetailsList").append("<div class=\"list-group-item\">Crew: " + shipList[shipNumber].crew + "</div>");
+		$(".shipDetailsList").append("<div class=\"list-group-item\">Crew: " + visibleShipList[shipNumber].crew + "</div>");
 
-		$(".shipDetailsList").append("<div class=\"list-group-item\">Hyperdrive Rating: " + shipList[shipNumber].hyperdrive_rating + "</div>");
+		$(".shipDetailsList").append("<div class=\"list-group-item\">Hyperdrive Rating: " + visibleShipList[shipNumber].hyperdrive_rating + "</div>");
 
-		$(".shipDetailsList").append("<div class=\"list-group-item\">Length: " + shipList[shipNumber].length + " meters</div>");
+		$(".shipDetailsList").append("<div class=\"list-group-item\">Length: " + visibleShipList[shipNumber].length + " meters</div>");
 
-		$(".shipDetailsList").append("<div class=\"list-group-item\">Manufacturer: " + shipList[shipNumber].manufacturer + "</div>");
+		$(".shipDetailsList").append("<div class=\"list-group-item\">Manufacturer: " + visibleShipList[shipNumber].manufacturer + "</div>");
 
-		$(".shipDetailsList").append("<div class=\"list-group-item\">Passengers: " + shipList[shipNumber].passengers + "</div>");
+		$(".shipDetailsList").append("<div class=\"list-group-item\">Passengers: " + visibleShipList[shipNumber].passengers + "</div>");
 
 		//THE PRESTIGE
 		$(".shipDetailsList").show("fast");
-		if(shipList[shipNumber].pilots.length > 0)
+		if(visibleShipList[shipNumber].pilots.length > 0)
 		{
 			$(".previousOwnerButton").show("fast");
 			$(".previousOwnerButton").on('click', function() {
 				$(".modal-body").empty();
-				for (i = 0; i < shipList[shipNumber].pilots.length; i++) {
-					$.get(shipList[shipNumber].pilots[i], gotCrap);
+				for (i = 0; i < visibleShipList[shipNumber].pilots.length; i++) {
+					$.get(visibleShipList[shipNumber].pilots[i], gotCrap);
 				}
 			});
 		}
@@ -166,4 +186,31 @@ var priceFilter = function(elt, i, ar) {
 	} else {
 	  return false;
 	}
+}
+
+var sortForPrice = function(evt) {
+  for (i=0; i<visibleShipList.length; i++){
+    if (visibleShipList[i].cost_in_credits == "unknown") {
+      visibleShipList.splice(i, 1);
+      i--;
+    }
+  }
+	visibleShipList.sort(function(a, b){
+	return Number(a.cost_in_credits) - Number(b.cost_in_credits);
+	});
+}
+
+var sortByName = function(evt){
+  visibleShipList = shipList.slice();
+  $("#searchText").val("");
+  $("#filterPrice").val("");
+  visibleShipList.sort(function(a, b){
+    if (a.name.toLowerCase() < b.name.toLowerCase()){
+      return -1;
+    } else if (a.name.toLowerCase() > b.name.toLowerCase()){
+      return 1;
+    } else {
+      return 0;
+    }
+  });
 }
