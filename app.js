@@ -1,7 +1,11 @@
+// KualiCo StarshipTrader.com
+// Made By: Michael Collier
+
 var shipList = [];
 var searchFilterList = [];
 var priceFilterList = [];
 var visibleShipList = [];
+var ajaxRequests = [];
 var shipTotal = 0;
 
 $(document).ready(function(){
@@ -9,21 +13,22 @@ $(document).ready(function(){
   $(".shipDetailsPane").height(function(){ return 0.74 * $(window).height()});
   $(".shipBrowserPane").height(function(){ return 0.74 * $(window).height()});
   $(".filterOptionsPane").height(function(){ return 0.74 * $(window).height()});
-  $(".headerTitleWell").height(function(){ return 0.075 * $(window).height()});
+  $(".headerTitleWell").height(function(){ return 0.05 * $(window).height()});
+  $(".footerWell").height(function(){ return .02 * $(window).height()});
 
   //Show Mr. Ajax who's boss
 	var apiCall = "http://swapi.co/api/starships/";
-	punchAPI(apiCall);
+	ajaxRequests.push(punchAPI(apiCall));
 
 	//Bind functions
 	$("#searchText").on('keyup', function(evt){
 	  searchFilterList = shipList.filter(searchFilter);
 	  if ($("#filterPrice").val() !== ""){
-	    visibleShipList = searchFilterList.filter(function(n) {
-	      return priceFilterList.indexOf(n) != -1;
-	    });
+		visibleShipList = searchFilterList.filter(function(n) {
+		  return priceFilterList.indexOf(n) != -1;
+		});
 	  } else {
-	    visibleShipList = searchFilterList;
+		visibleShipList = searchFilterList;
 	  }
 		updateDisplayList(visibleShipList);
 	});
@@ -31,31 +36,31 @@ $(document).ready(function(){
 	$("#filterPrice").on('keyup', function(evt){
 	  priceFilterList = shipList.filter(priceFilter);
 	  if ($("#searchText").val() !== ""){
-	    visibleShipList = priceFilterList.filter(function(n){
-	      return searchFilterList.indexOf(n) != -1;
-	    });
+		visibleShipList = priceFilterList.filter(function(n){
+		  return searchFilterList.indexOf(n) != -1;
+		});
 	  } else {
-	    visibleShipList = priceFilterList;
+		visibleShipList = priceFilterList;
 	  }
 	  updateDisplayList(visibleShipList);
 	});
-	
+
 	$(".sortLowToHigh").on('click', function(evt){
-    sortForPrice(evt);
+	sortForPrice(evt);
 	  updateDisplayList(visibleShipList);
 	});
-	
+
 	$(".sortHighToLow").on('click', function(evt){
 	  sortForPrice(evt);
 	  visibleShipList.reverse();
 	  updateDisplayList(visibleShipList);
 	});
-	
+
 	$(".sortAToZ").on('click', function(evt){
 	  sortByName(evt);
 	  updateDisplayList(visibleShipList);
 	});
-	
+
 	$(".sortZToA").on('click', function(evt){
 	  sortByName(evt);
 	  visibleShipList.reverse();
@@ -71,6 +76,7 @@ var punchAPI = function(apiURL){
 
 var onResponse = function(dataObject){
 	//Update ShipList
+	ajaxRequests.pop();
 	for (i = 0; i<dataObject.results.length; i++){
 		shipList[shipTotal] = dataObject.results[i];
 		shipTotal++;
@@ -80,8 +86,9 @@ var onResponse = function(dataObject){
 	//next will == null when on last page
 	if (dataObject.next !== null)
 	{
-		punchAPI(dataObject.next);
+		ajaxRequests.push(punchAPI(dataObject.next));
 	} else {
+	  ajaxRequests.pop();
 	  shipTotal--;
 	  $(".shipLoadingBar").hide("fast");
 	  $("#searchText").prop('disabled', false);
@@ -96,13 +103,13 @@ var onResponse = function(dataObject){
 var updateDisplayList = function(shipArray){
   $(".shipListGroup").empty();
   for (i=0; i<shipArray.length; i++){
-    if (shipArray[i].cost_in_credits == "unknown"){
-      $(".shipListGroup").append("<div class=\"list-group-item unknownPrice\" onclick=\"inspectShip(this," + i + ")\">" +
+	if (shipArray[i].cost_in_credits == "unknown"){
+	  $(".shipListGroup").append("<div class=\"list-group-item unknownPrice\" onclick=\"inspectShip(this," + i + ")\">" +
 	   shipArray[i].name + "</div>");
-    } else {
+	} else {
 	   $(".shipListGroup").append("<div class=\"list-group-item\" onclick=\"inspectShip(this," + i + ")\">" +
 	   shipArray[i].name + "</div>");
-    }
+	}
   }
 }
 
@@ -116,10 +123,16 @@ var inspectShip = function(e, shipNumber) {
 		//Remove old ship data
 		$(".shipDetailsList").empty();
 		$(".previousOwnerList").empty();
-		
+		$(".previousOwnerTitle").hide();
+		$(".previousOwnerBar").hide();
+
 		//Activate clicked element
 		$(e).addClass("active");
 
+		//Abort old Ajax Requests
+		for (i=0; i<ajaxRequests.length; i++){
+			ajaxRequests[i].abort();
+		}
 
 		//MAKE IT PRITTY -- ANIMATIONS === PRODUCTION VALUE
 		$(".shipDetailsList").hide();
@@ -152,25 +165,30 @@ var inspectShip = function(e, shipNumber) {
 		$(".shipDetailsList").show("fast");
 		if(visibleShipList[shipNumber].pilots.length > 0)
 		{
-		  $(".previousOwnerList").append("<h3>Previous Owners</h3>")
+		  var pilotCounter = 0;
+		  $(".previousOwnerBar").show("fast");
+		  $(".previousOwnerTitle").show("fast");
 			for (i = 0; i < visibleShipList[shipNumber].pilots.length; i++) {
-				$.get(visibleShipList[shipNumber].pilots[i], gotCrap);
+				ajaxRequests.push($.get(visibleShipList[shipNumber].pilots[i], function(dataObject){
+					pilotCounter++;
+					$(".previousOwnerList").append("<div class=\"list-group-item\">" + dataObject.name + "</div>");
+					if (pilotCounter === visibleShipList[shipNumber].pilots.length){
+						$(".previousOwnerBar").hide("fast");
+						$(".previousOwnerList").show("fast");
+					}
+				}));
 			}
 		}
 	}
 
 }
 
-var gotCrap = function(pilotObject) {
-  $(".previousOwnerList").append("<div class=\"list-group-item\">" + pilotObject.name + "</div>");
-}
-
 var searchFilter = function(elt, i, ar) {
 	var compareString = $("#searchText").val();
 	  if (elt.name.toLowerCase().includes(compareString.toLowerCase())) {
-    return true;
+	return true;
   } else {
-    return false;
+	return false;
   }
 }
 
@@ -185,10 +203,10 @@ var priceFilter = function(elt, i, ar) {
 
 var sortForPrice = function(evt) {
   for (i=0; i<visibleShipList.length; i++){
-    if (visibleShipList[i].cost_in_credits == "unknown") {
-      visibleShipList.splice(i, 1);
-      i--;
-    }
+	if (visibleShipList[i].cost_in_credits == "unknown") {
+	  visibleShipList.splice(i, 1);
+	  i--;
+	}
   }
 	visibleShipList.sort(function(a, b){
 	return Number(a.cost_in_credits) - Number(b.cost_in_credits);
@@ -197,15 +215,15 @@ var sortForPrice = function(evt) {
 
 var sortByName = function(evt){
   if ($("#searchText").val() === "" && $("#filterPrice").val() === "") {
-    visibleShipList = shipList.slice();
+	visibleShipList = shipList.slice();
   }
   visibleShipList.sort(function(a, b){
-    if (a.name.toLowerCase() < b.name.toLowerCase()){
-      return -1;
-    } else if (a.name.toLowerCase() > b.name.toLowerCase()){
-      return 1;
-    } else {
-      return 0;
-    }
+	if (a.name.toLowerCase() < b.name.toLowerCase()){
+	  return -1;
+	} else if (a.name.toLowerCase() > b.name.toLowerCase()){
+	  return 1;
+	} else {
+	  return 0;
+	}
   });
 }

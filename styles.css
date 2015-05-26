@@ -1,5 +1,5 @@
 .shipDetailsPane {
-  overflow-y: auto;
+	overflow-y: auto;
 }
 
 .shipBrowserPane {
@@ -9,12 +9,12 @@
 }
 
 .filterOptionsPane {
-  margin-left:25px;
-  overflow-y:auto;
+	margin-left:30px;
+	overflow-y:auto;
 }
 
 .headerTitle {
-  font-size:45px;
+	font-size:45px;
 }
 
 .headerTitleWell {
@@ -55,12 +55,37 @@
 }
 
 .sortDropdown{
-  float:right;
+	float:right;
 }
 
 .shipBrowserPaneBody .progress {
-  height:20px;
+	height:20px;
 }
 
 .shipBrowserPaneBody .progress .progress-bar{
-  line-height:20px;
+	line-height:20px;
+	font-size:16px;
+
+}
+
+.previousOwnerTitle {
+	display:none;
+}
+
+.previousOwnerDiv .progress {
+	height:20px;
+	display:none;
+}
+
+.previousOwnerDiv .progress .progress-bar {
+	line-height:20px;
+	font-size:16px;
+}
+
+.footerWell p {
+	text-align:center;
+}
+
+.previousOwnerList {
+	display:none;
+}

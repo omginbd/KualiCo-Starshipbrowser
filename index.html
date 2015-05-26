@@ -32,23 +32,23 @@
 				<div class="col-sm-4 shipBrowserPane well">
 					<h2 class="shipBrowserPaneHeader">Ship List
 					<span class="dropdown">
-            <button class="btn btn-sm btn-primary dropdown-toggle sortDrop" type="button" id="sortDropMenu" data-toggle="dropdown" disabled>Sort by
-              <span class="caret"></span></button>
-            <ul class="dropdown-menu noSelectItem">
-              <li class="sortLowToHigh"><a>Price - Low to High</a></li>
-              <li class="sortHighToLow"><a>Price - High to Low</a></li>
-              <li class="divider"></li>
-              <li class="sortAToZ"><a>Name - A to Z</a></li>
-              <li class="sortZToA"><a>Name - Z to A</a></li>
-            </ul>
-          </span></h2>
+			<button class="btn btn-sm btn-primary dropdown-toggle sortDrop" type="button" id="sortDropMenu" data-toggle="dropdown" disabled>Sort by
+			  <span class="caret"></span></button>
+			<ul class="dropdown-menu noSelectItem">
+			  <li class="sortLowToHigh"><a>Price - Low to High</a></li>
+			  <li class="sortHighToLow"><a>Price - High to Low</a></li>
+			  <li class="divider"></li>
+			  <li class="sortAToZ"><a>Name - A to Z</a></li>
+			  <li class="sortZToA"><a>Name - Z to A</a></li>
+			</ul>
+		  </span></h2>
 					<hr>
 					<div class="shipBrowserPaneBody">
 					  <div class="progress shipLoadingBar">
-					    <div class="progress-bar progress-bar-striped active" style="width:100%">Loading Ship List</div>
+						<div class="progress-bar progress-bar-striped active" style="width:100%">Loading Ship List</div>
 					  </div>
-  					<ul class="list-group shipListGroup" id="shipListGroup">
-  					</ul>
+					  <ul class="list-group shipListGroup" id="shipListGroup">
+					  </ul>
 					</div>
 				</div>
 				<div class="col-sm-4 shipDetailsPane well">
@@ -57,20 +57,37 @@
 					<div class="shipDetailsPaneBody">
 						<ul class="list-group shipDetailsList">
 						</ul>
-						
+
 						<div class="previousOwnerDiv">
+							<h3 class="previousOwnerTitle">Previous Owners<hr></h3>
+							<div class="progress previousOwnerBar">
+								<div class="progress-bar progress-bar-striped active" style="width:100%">Loading Previous Owners</div>
+							</div>
 						  <ul class="list-group previousOwnerList">
-						    
+
 						  </ul>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+		<div class="well footerWell">
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-4">
+						<p><a href="http://swapi.co">SWAPI</a></p>
+					</div>
+					<div class="col-sm-2">
+					</div>
+					<div class="col-sm-4">
+						<p><a href="https://github.com/omginbd/KualiCo-Starshipbrowser">StarshipTrader.com GitHub Project</a></p>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
-		<script src="jquery-2.1.3.js"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-		<script src="app.js"></script>
-	</div>
+	<script src="jquery-2.1.3.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+	<script src="app.js"></script>
 </body>
 </html>
