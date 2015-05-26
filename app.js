@@ -11,9 +11,6 @@ $(document).ready(function(){
   $(".filterOptionsPane").height(function(){ return 0.74 * $(window).height()});
   $(".headerTitleWell").height(function(){ return 0.075 * $(window).height()});
 
-  //clean up
-	$(".previousOwnerButton").hide();
-
   //Show Mr. Ajax who's boss
 	var apiCall = "http://swapi.co/api/starships/";
 	punchAPI(apiCall);
@@ -86,6 +83,10 @@ var onResponse = function(dataObject){
 		punchAPI(dataObject.next);
 	} else {
 	  shipTotal--;
+	  $(".shipLoadingBar").hide("fast");
+	  $("#searchText").prop('disabled', false);
+	  $("#filterPrice").prop('disabled', false);
+	  $(".sortDrop").prop('disabled', false);
 	  updateDisplayList(shipList);
 	  visibleShipList = shipList.slice();
 	}
@@ -114,8 +115,8 @@ var inspectShip = function(e, shipNumber) {
 
 		//Remove old ship data
 		$(".shipDetailsList").empty();
-		$(".previousOwnerButton").hide();
-
+		$(".previousOwnerList").empty();
+		
 		//Activate clicked element
 		$(e).addClass("active");
 
@@ -151,23 +152,17 @@ var inspectShip = function(e, shipNumber) {
 		$(".shipDetailsList").show("fast");
 		if(visibleShipList[shipNumber].pilots.length > 0)
 		{
-			$(".previousOwnerButton").show("fast");
-			$(".previousOwnerButton").on('click', function() {
-				$(".modal-body").empty();
-				for (i = 0; i < visibleShipList[shipNumber].pilots.length; i++) {
-					$.get(visibleShipList[shipNumber].pilots[i], gotCrap);
-				}
-			});
+		  $(".previousOwnerList").append("<h3>Previous Owners</h3>")
+			for (i = 0; i < visibleShipList[shipNumber].pilots.length; i++) {
+				$.get(visibleShipList[shipNumber].pilots[i], gotCrap);
+			}
 		}
 	}
 
 }
 
 var gotCrap = function(pilotObject) {
-	var homeworldObject = $.ajax(pilotObject.homeworld, {async: false});
-	$(".modal-body").append("<div class=\"well-sm\"> " + pilotObject.name + "</div>");
-	$(".modal-body").append("Homeworld: " + homeworldObject.responseJSON.name);
-	$(".modal-body").append("<hr>");
+  $(".previousOwnerList").append("<div class=\"list-group-item\">" + pilotObject.name + "</div>");
 }
 
 var searchFilter = function(elt, i, ar) {

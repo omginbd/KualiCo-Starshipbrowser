@@ -9,9 +9,9 @@
 </head>
 
 <body>
-	<div class="container-fluid">
+	<div class="container">
 		<div class="well headerTitleWell">
-			<h1 class="headerTitle">StarshipTrader.com</h1>
+			<div class="headerTitle">StarshipTrader.com</div>
 		</div>
 		<div class="container-fluid">
 			<div class="row">
@@ -20,19 +20,19 @@
 					<hr>
 					<div class="filterOptionsPaneBody">
 						<div class="searchFilter">
-							<label>Search</label>
-							<input type="text" class="form-control" id="searchText">
+							<label>Search by Ship Name</label>
+							<input type="text" class="form-control" id="searchText" disabled>
 						</div>
 						<div class="priceFilter">
 							<label>Filter Ships more than: </label>
-							<input type="text" class="form-control" id="filterPrice">
+							<input type="text" class="form-control" id="filterPrice" disabled>
 						</div>
 					</div>
 				</div>
 				<div class="col-sm-4 shipBrowserPane well">
 					<h2 class="shipBrowserPaneHeader">Ship List
-					<span class="dropdown dropdown-fluid sortDrop">
-            <button class="btn btn-sm btn-primary dropdown-toggle" type="button" id="sortDropMenu" data-toggle="dropdown">Sort by
+					<span class="dropdown">
+            <button class="btn btn-sm btn-primary dropdown-toggle sortDrop" type="button" id="sortDropMenu" data-toggle="dropdown" disabled>Sort by
               <span class="caret"></span></button>
             <ul class="dropdown-menu noSelectItem">
               <li class="sortLowToHigh"><a>Price - Low to High</a></li>
@@ -44,8 +44,11 @@
           </span></h2>
 					<hr>
 					<div class="shipBrowserPaneBody">
-					<ul class="list-group shipListGroup" id="shipListGroup">
-					</ul>
+					  <div class="progress shipLoadingBar">
+					    <div class="progress-bar progress-bar-striped active" style="width:100%">Loading Ship List</div>
+					  </div>
+  					<ul class="list-group shipListGroup" id="shipListGroup">
+  					</ul>
 					</div>
 				</div>
 				<div class="col-sm-4 shipDetailsPane well">
@@ -54,22 +57,11 @@
 					<div class="shipDetailsPaneBody">
 						<ul class="list-group shipDetailsList">
 						</ul>
-						<button type="button" class="btn btn-primary previousOwnerButton" data-toggle="modal" data-target="#previousOwnerModal">Previous Owners</button>
-
-						<div id="previousOwnerModal" class="modal fade" role="dialog">
-							<div class="modal-dialog modal-lg">
-								<div class="modal-content">
-									<div class="modal-header">
-										<button type="button" class="close" data-dismiss="modal">&times;</button>
-										<h4 class="modal-title">Previous Owners</h4>
-									</div>
-									<div class="modal-body">
-
-									</div>
-									<div class="modal-footer">
-										<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-								</div>
-							</div>
+						
+						<div class="previousOwnerDiv">
+						  <ul class="list-group previousOwnerList">
+						    
+						  </ul>
 						</div>
 					</div>
 				</div>
