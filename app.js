@@ -6,11 +6,10 @@ var shipTotal = 0;
 
 $(document).ready(function(){
   //Fix Window Height
-
-  $(".shipDetailsPane").height(function(){ return 0.8 * $(window).height()});
-  $(".shipBrowserPane").height(function(){ return 0.8 * $(window).height()});
-  $(".filterOptionsPane").height(function(){ return 0.8 * $(window).height()});
-  $(".headerTitleWell").height(function(){ return 0.2 * $(window).height()});
+  $(".shipDetailsPane").height(function(){ return 0.74 * $(window).height()});
+  $(".shipBrowserPane").height(function(){ return 0.74 * $(window).height()});
+  $(".filterOptionsPane").height(function(){ return 0.74 * $(window).height()});
+  $(".headerTitleWell").height(function(){ return 0.075 * $(window).height()});
 
   //clean up
 	$(".previousOwnerButton").hide();
@@ -59,6 +58,7 @@ $(document).ready(function(){
 	  sortByName(evt);
 	  updateDisplayList(visibleShipList);
 	});
+	
 	$(".sortZToA").on('click', function(evt){
 	  sortByName(evt);
 	  visibleShipList.reverse();
@@ -201,9 +201,9 @@ var sortForPrice = function(evt) {
 }
 
 var sortByName = function(evt){
-  visibleShipList = shipList.slice();
-  $("#searchText").val("");
-  $("#filterPrice").val("");
+  if ($("#searchText").val() === "" && $("#filterPrice").val() === "") {
+    visibleShipList = shipList.slice();
+  }
   visibleShipList.sort(function(a, b){
     if (a.name.toLowerCase() < b.name.toLowerCase()){
       return -1;
