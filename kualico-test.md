@@ -1,6 +1,6 @@
 # Star Wars API Viewer
 snsnaoedusnaothnhihihi
-anoethuasnothu
+anoethuasnothutaheousnatoh
 ## What you are building
 Your task, dear friend, is to build an application using the [Star Wars
 API](http://swapi.co/).
